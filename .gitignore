@@ -1,0 +1,12 @@
+dist/
+*.zip
+.DS_Store
+node_modules/
+
+# Local extraction outputs (test runs)
+[0-9]*.md
+demo*.md
+
+# Source recordings — keep the optimized GIF in docs/screenshots/, not the raw video
+*.mov
+*.mp4

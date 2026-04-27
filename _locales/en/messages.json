@@ -1,0 +1,68 @@
+{
+  "appName":             { "message": "YouTube Transcript to Markdown" },
+  "appShortName":        { "message": "YT Transcript" },
+  "appDescription":      { "message": "Extract YouTube transcripts into LLM-ready Markdown — YAML frontmatter (channel, date, duration, language) + Description + chapter-aware Transcript. Auto-opens the transcript panel." },
+  "appTitle":            { "message": "Transcript" },
+  "labelOutput":         { "message": "Output" },
+  "actionDownload":      { "message": "Download .md" },
+  "actionCopy":          { "message": "Copy to clipboard" },
+  "labelLanguage":       { "message": "Language" },
+  "captionKindAsr":      { "message": "auto-generated" },
+  "labelGap":            { "message": "Paragraph gap" },
+  "presetDialogue":      { "message": "Dialogue" },
+  "presetSolo":          { "message": "Solo" },
+  "presetFast":          { "message": "Fast" },
+  "presetSlow":          { "message": "Slow" },
+  "gapCurrent":          { "message": "Now" },
+  "gapUnit":             { "message": "sec" },
+  "btnExtract":          { "message": "Extract transcript" },
+  "btnWorking":          { "message": "Working..." },
+  "progressStarting":    { "message": "Starting..." },
+  "progressOpening":     { "message": "Opening transcript panel..." },
+  "progressSwitchingLang": {
+    "message": "Switching to $LANG$...",
+    "placeholders": { "lang": { "content": "$1" } }
+  },
+  "progressParsing":     {
+    "message": "Parsing $COUNT$ segments...",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "progressRendering":   {
+    "message": "Rendering $COUNT$ paragraphs...",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "progressSaving":      { "message": "Saving..." },
+  "statusNotYoutube":    { "message": "Only works on a YouTube watch page." },
+  "statusPlayerLoading": { "message": "Player is still loading — reopen this popup in a few seconds." },
+  "statusProbeFailed":   { "message": "Could not read page state. Refresh the YouTube tab and try again." },
+  "statusNoCaptions":    { "message": "This video has no extractable caption tracks." },
+  "statusReadyTracks":   {
+    "message": "Detected $COUNT$ caption track(s). Ready to extract.",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "statusReadyTranscriptOpen": { "message": "Transcript panel is open. Ready to extract." },
+  "statusSaved":         {
+    "message": "Saved $FILE$ ($COUNT$ paragraphs).",
+    "placeholders": { "file": { "content": "$1" }, "count": { "content": "$2" } }
+  },
+  "statusCopied":        {
+    "message": "Copied $CHARS$ chars ($COUNT$ paragraphs).",
+    "placeholders": { "chars": { "content": "$1" }, "count": { "content": "$2" } }
+  },
+  "statusInjectFailed":  {
+    "message": "Inject failed: $MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "statusNoResult":      { "message": "No result from page. Is the tab still on YouTube?" },
+  "errNoVideoId":        { "message": "Could not determine video id (no v= in URL and no player response)." },
+  "errPanelNotOpen":     {
+    "message": "Could not auto-open the transcript panel ($DIAG$). Open it manually from the video's ⋯ menu and retry, or check the [tube2md] logs in DevTools.",
+    "placeholders": { "diag": { "content": "$1" } }
+  },
+  "errNoCues":           {
+    "message": "Parsed 0 cues from $N$ segments — the YouTube DOM may have changed.",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "errEmptyAfterCleanup":{ "message": "All cues were empty after cleanup." },
+  "errClipboardBlocked": { "message": "Clipboard write was blocked. Try Download instead." }
+}

@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest a new capability or enhancement
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Concrete use cases land much faster than abstract wishes — please describe what you were trying to do, not just what you'd like the tool to have.
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: When you're trying to X, you want Y because Z.
+      placeholder: |
+        E.g. "When I extract a multi-speaker debate, I want speaker names instead of generic dashes,
+        because my downstream LLM prompt asks for per-speaker summaries."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: How should the popup / output change? Mockup or example markdown welcome.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other extensions, manual workarounds, things that almost work.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      description: The project intentionally avoids these — confirm your request doesn't depend on them.
+      options:
+        - label: My request does NOT require remote API calls or third-party services.
+          required: true
+        - label: My request does NOT require `content_scripts` (always-on injection into YouTube).
+          required: true

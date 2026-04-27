@@ -1,0 +1,81 @@
+name: Bug report
+description: Report a transcript extraction failure or unexpected output
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Most common bug is "YouTube changed a DOM tag name" (it happens regularly). Please fill out as much as you can — without the video URL and console logs it's hard to reproduce.
+
+  - type: input
+    id: video_url
+    attributes:
+      label: Video URL
+      description: The exact URL where extraction failed.
+      placeholder: https://www.youtube.com/watch?v=...
+    validations:
+      required: true
+
+  - type: input
+    id: chrome_version
+    attributes:
+      label: Chrome version + OS
+      description: From `chrome://version`. Include OS too.
+      placeholder: e.g. Chrome 147.0.7727.102 / macOS 15.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: What did the popup status show? What's missing or wrong in the output file?
+      placeholder: |
+        E.g.: "Got error 'errPanelNotOpen' even though the transcript panel actually opens
+        when I click 'Show transcript' manually."
+    validations:
+      required: true
+
+  - type: textarea
+    id: console_logs
+    attributes:
+      label: DevTools console logs
+      description: |
+        Open DevTools (Cmd/Ctrl + Option/Shift + I) → Console tab → filter by `tube2md` → reproduce → paste the lines here.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: diagnostic
+    attributes:
+      label: Renderer diagnostic (very helpful for DOM bugs)
+      description: |
+        Paste the output of running this snippet in DevTools Console on the failing video page (after the transcript panel is open):
+
+        ```js
+        (() => {
+          const tags = new Set();
+          for (const el of document.querySelectorAll('*')) {
+            const t = el.tagName.toLowerCase();
+            if (t.includes('-') && (t.includes('transcript') || t.includes('caption') || t.includes('segment'))) {
+              tags.add(t);
+            }
+          }
+          console.log('transcript-related tags on page:', [...tags].sort());
+          console.log('legacy segments:', document.querySelectorAll('ytd-transcript-segment-renderer').length);
+          console.log('modern segments:', document.querySelectorAll('transcript-segment-view-model').length);
+        })();
+        ```
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      placeholder: E.g. "Transcript exported to a Markdown file."
+    validations:
+      required: false

@@ -1,0 +1,24 @@
+{
+  "name": "tube2md",
+  "version": "0.1.0",
+  "description": "Chrome extension that exports YouTube transcripts to LLM-ready Markdown.",
+  "private": true,
+  "type": "module",
+  "homepage": "https://github.com/searchpcc/tube2md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/searchpcc/tube2md.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node --test test/*.test.js",
+    "package": "zip -r tube2md.zip manifest.json popup.html popup.js extractor.js icons _locales -x '*.DS_Store'"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "jsdom": "^26.0.0"
+  }
+}

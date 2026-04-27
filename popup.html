@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title data-i18n="appTitle">Transcript</title>
+  <style>
+    :root {
+      --bg:         #ffffff;
+      --ink:        #000000;
+      --ink-soft:   #666666;
+      --rule:       #e5e5e5;
+      --rule-strong:#cccccc;
+      --accent:     #c62828;
+      --sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
+              "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { background: var(--bg); }
+    body {
+      width: 300px;
+      margin: 0;
+      padding: 18px 20px 16px;
+      color: var(--ink);
+      font: 13px/1.5 var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+    .masthead {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .masthead .logo {
+      width: 26px;
+      height: 26px;
+      display: block;
+      flex: none;
+    }
+    .masthead .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .rule {
+      height: 1px;
+      background: var(--rule);
+      margin: 14px 0 16px;
+    }
+    .field { margin-bottom: 16px; }
+    .field > .label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--rule-strong);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+    .segmented label {
+      text-align: center;
+      padding: 7px 0;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--ink-soft);
+      border-left: 1px solid var(--rule-strong);
+      transition: background .15s ease, color .15s ease;
+    }
+    .segmented label:first-of-type { border-left: none; }
+    .segmented input:checked + label {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .chips button {
+      all: unset;
+      text-align: center;
+      padding: 7px 0;
+      font-size: 12px;
+      color: var(--ink-soft);
+      border: 1px solid var(--rule-strong);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .chips button:hover { color: var(--ink); border-color: var(--ink-soft); }
+    .chips button.on {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .chip-hint {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .chip-hint input {
+      width: 56px;
+      padding: 2px 6px;
+      border: none;
+      border-bottom: 1px solid var(--rule-strong);
+      background: transparent;
+      color: var(--ink);
+      font: 600 14px/1 var(--sans);
+      text-align: right;
+      outline: none;
+    }
+    .chip-hint input:focus { border-bottom-color: var(--ink); }
+    .chip-hint .unit {
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    #run {
+      width: 100%;
+      padding: 10px 0;
+      background: var(--ink);
+      color: var(--bg);
+      border: 1px solid var(--ink);
+      border-radius: 4px;
+      font: 600 13px/1 var(--sans);
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease;
+    }
+    #run:hover { background: #333; border-color: #333; }
+    #run:disabled {
+      background: var(--rule-strong);
+      border-color: var(--rule-strong);
+      cursor: wait;
+    }
+    #status {
+      min-height: 1.4em;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--rule);
+      font-size: 12px;
+      color: var(--ink-soft);
+      word-break: break-word;
+    }
+    #status.ok { color: var(--ink); }
+    #status.ok::before {
+      content: "✓ ";
+      color: var(--ink);
+      font-weight: 700;
+    }
+    #status.err { color: var(--accent); }
+    #status.err::before {
+      content: "✗ ";
+      font-weight: 700;
+    }
+    #lang {
+      width: 100%;
+      padding: 7px 10px;
+      font: 13px/1.2 var(--sans);
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--rule-strong);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    #lang:focus { border-color: var(--ink); }
+  </style>
+</head>
+<body>
+  <div class="masthead">
+    <img class="logo" src="icons/icon64.png" alt="" />
+    <div class="title" data-i18n="appTitle">Transcript</div>
+  </div>
+  <div class="rule"></div>
+
+  <div class="field">
+    <span class="label" data-i18n="labelOutput">Output</span>
+    <div class="segmented">
+      <input type="radio" name="action" id="act-dl" value="download" checked />
+      <label for="act-dl" data-i18n="actionDownload">Download .md</label>
+      <input type="radio" name="action" id="act-cp" value="copy" />
+      <label for="act-cp" data-i18n="actionCopy">Copy to clipboard</label>
+    </div>
+  </div>
+
+  <div class="field" id="lang-field" hidden>
+    <span class="label" data-i18n="labelLanguage">Language</span>
+    <select id="lang"></select>
+  </div>
+
+  <div class="field">
+    <span class="label" data-i18n="labelGap">Paragraph gap</span>
+    <div class="chips" id="chips">
+      <button type="button" data-gap="2.5" class="on" data-i18n="presetDialogue">Dialogue</button>
+      <button type="button" data-gap="3.5" data-i18n="presetSolo">Solo</button>
+      <button type="button" data-gap="1.8" data-i18n="presetFast">Fast</button>
+      <button type="button" data-gap="5.0" data-i18n="presetSlow">Slow</button>
+    </div>
+    <div class="chip-hint">
+      <span data-i18n="gapCurrent">Now</span>
+      <input type="number" id="gap" min="0.5" max="60" step="0.1" value="2.5" />
+      <span class="unit" data-i18n="gapUnit">sec</span>
+    </div>
+  </div>
+
+  <button id="run" data-i18n="btnExtract">Extract transcript</button>
+  <div id="status"></div>
+
+  <script src="extractor.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

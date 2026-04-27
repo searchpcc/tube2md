@@ -1,0 +1,68 @@
+{
+  "appName":             { "message": "YouTube 字幕萃取" },
+  "appShortName":        { "message": "字幕萃取" },
+  "appDescription":      { "message": "把 YouTube 字幕抓成 LLM 友好的 Markdown——YAML frontmatter（频道、日期、时长、语言）+ 描述 + 按章节切分的字幕。自动展开文字稿面板。" },
+  "appTitle":            { "message": "字幕萃取" },
+  "labelOutput":         { "message": "输出方式" },
+  "actionDownload":      { "message": "下载 .md" },
+  "actionCopy":          { "message": "复制到剪贴板" },
+  "labelLanguage":       { "message": "语言" },
+  "captionKindAsr":      { "message": "自动生成" },
+  "labelGap":            { "message": "段落间隔" },
+  "presetDialogue":      { "message": "对谈" },
+  "presetSolo":          { "message": "单人" },
+  "presetFast":          { "message": "快节奏" },
+  "presetSlow":          { "message": "慢" },
+  "gapCurrent":          { "message": "当前" },
+  "gapUnit":             { "message": "秒" },
+  "btnExtract":          { "message": "提取字幕" },
+  "btnWorking":          { "message": "处理中…" },
+  "progressStarting":    { "message": "准备中…" },
+  "progressOpening":     { "message": "正在打开字幕面板…" },
+  "progressSwitchingLang": {
+    "message": "正在切换到 $LANG$…",
+    "placeholders": { "lang": { "content": "$1" } }
+  },
+  "progressParsing":     {
+    "message": "正在解析 $COUNT$ 段字幕…",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "progressRendering":   {
+    "message": "正在合并 $COUNT$ 段…",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "progressSaving":      { "message": "正在保存…" },
+  "statusNotYoutube":    { "message": "只在 YouTube 视频页可用，请先打开一个 watch 页面。" },
+  "statusPlayerLoading": { "message": "播放器仍在加载，等几秒再打开此窗口。" },
+  "statusProbeFailed":   { "message": "未能读取页面状态，请刷新 YouTube 页面后重试。" },
+  "statusNoCaptions":    { "message": "此视频没有可提取的字幕轨。" },
+  "statusReadyTracks":   {
+    "message": "检测到 $COUNT$ 条字幕轨，可以提取。",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "statusReadyTranscriptOpen": { "message": "文字稿面板已打开，可以提取。" },
+  "statusSaved":         {
+    "message": "已保存 $FILE$（$COUNT$ 段）。",
+    "placeholders": { "file": { "content": "$1" }, "count": { "content": "$2" } }
+  },
+  "statusCopied":        {
+    "message": "已复制 $CHARS$ 字符（$COUNT$ 段）。",
+    "placeholders": { "chars": { "content": "$1" }, "count": { "content": "$2" } }
+  },
+  "statusInjectFailed":  {
+    "message": "注入失败：$MSG$",
+    "placeholders": { "msg": { "content": "$1" } }
+  },
+  "statusNoResult":      { "message": "页面无响应，请确认标签页仍在 YouTube。" },
+  "errNoVideoId":        { "message": "无法识别视频 ID（URL 里没有 v= 参数，也没读到 player response）。" },
+  "errPanelNotOpen":     {
+    "message": "未能自动打开文字稿面板（$DIAG$）。请在视频下方「…」菜单手动点「显示文字稿」后重试，或在 DevTools 控制台查看 [tube2md] 日志。",
+    "placeholders": { "diag": { "content": "$1" } }
+  },
+  "errNoCues":           {
+    "message": "从 $N$ 条 segment 里解析出 0 条 cue——YouTube DOM 可能变了。",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "errEmptyAfterCleanup":{ "message": "清洗后所有 cue 都为空。" },
+  "errClipboardBlocked": { "message": "剪贴板写入被拒绝，请改用「下载」。" }
+}
