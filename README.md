@@ -1,92 +1,94 @@
-# YouTube Transcript to Markdown
+# YouTube 字幕导出为 Markdown
+
+**简体中文** | [English](README.en.md)
 
 [![Release](https://img.shields.io/github/v/release/searchpcc/tube2md?sort=semver)](https://github.com/searchpcc/tube2md/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build](https://github.com/searchpcc/tube2md/actions/workflows/release.yml/badge.svg)](https://github.com/searchpcc/tube2md/actions/workflows/release.yml)
 
-A Chrome extension that exports a YouTube video's transcript as a clean, structured Markdown file — designed to be fed straight into an LLM (Claude, GPT, …) for summarization, article generation, or analysis.
+把 YouTube 视频字幕导出成结构化、LLM 友好的 Markdown 文件的 Chrome 扩展——直接喂给 Claude / GPT 等做总结、改写、分析。
 
-Available in English and 简体中文 — the popup follows your browser's locale.
-
-<p align="center">
-  <img src="docs/screenshots/demo.gif" alt="Extracting a YouTube transcript: open popup, pick options, download as Markdown" width="720" />
-</p>
-
-## What makes it different
-
-Most "YouTube transcript" extensions hand you a wall of cue text and call it done. This one tries to give you something an LLM can actually work with:
-
-- **YAML frontmatter with metadata.** Channel, channel ID, publish date, duration, language, caption type (ASR vs human), and chapter list — all up top so LLMs can ground their output.
-- **Chapter-aware structure.** When YouTube exposes chapters (or the creator put an OUTLINE in the description), each chapter becomes a `### Heading` and paragraphs are grouped accordingly.
-- **Speaker turn detection.** Podcast-style `- ` speaker turn markers (including rapid mid-cue back-and-forth) become paragraph breaks, so dialogue reads naturally.
-- **Description trimming.** Sponsor blocks, social links, and outline duplicates are stripped so they don't pollute LLM context budget.
-- **Functional-boundary detection.** Popup probes the page first; if there's no caption track, the Extract button is disabled with a clear message — no wasted clicks.
-- **Auto-opens the transcript panel.** Three fallback strategies cover every YouTube layout variant; supports both the legacy and the new "modern transcript view" renderer.
-- **Sensible filenames.** Downloads as `YYYYMMDD-title-slug-videoId.md` — sortable by date, scannable by title, unique by ID.
-
-Pure DOM scraping. No external API calls. No telemetry. Works offline once the page is loaded.
-
-## Install (unpacked, for now)
-
-1. Clone or download this repo.
-2. Visit `chrome://extensions`, enable **Developer mode** (top right).
-3. Click **Load unpacked** and select the repo's root directory.
-
-Tagged release zips are on the [Releases](../../releases) page.
-
-> Chrome Web Store listing is planned — gathering some real-world usage feedback first before going through review.
-
-## Use
-
-### Quick start
-
-1. Open a YouTube video (`youtube.com/watch?v=…`).
-2. Click the extension icon. The popup probes the page; the **Extract transcript** button enables only when the video actually has caption tracks.
-3. (Optional) Pick a caption language from the **Language** dropdown — only shown when the video has more than one track.
-4. Pick **Download .md** or **Copy to clipboard**, choose a paragraph gap, hit **Extract transcript**.
+支持 English 和 简体中文 —— popup 跟随浏览器 locale 自动切换。
 
 <p align="center">
-  <img src="docs/screenshots/popup.png" alt="Extension popup" width="320" />
+  <img src="docs/screenshots/demo.gif" alt="提取 YouTube 字幕的演示：打开 popup、选择选项、下载为 Markdown" width="720" />
 </p>
 
-The status line at the bottom (`Detected N caption track(s). Ready to extract.`) is the green light — if it shows an error in red, the button stays disabled and the message tells you what to do (refresh the tab, open transcript manually, etc.). Popup language follows your browser locale (English / 简体中文); the screenshot above is from a `zh_CN` browser.
+## 与其它同类扩展的差异
 
-### What each control does
+大部分 YouTube 字幕扩展只是把 cue 文本拼成一坨丢给你。这个项目想做的是**真正能被 LLM 用好的输出**：
 
-- **Output** — `Download .md` saves a file named `YYYYMMDD-title-slug-videoId.md` to your default download folder. `Copy to clipboard` writes the same Markdown straight to the clipboard, which is handy for pasting into a chat with Claude / ChatGPT.
-- **Language** — appears only when the video has multiple caption tracks. Defaults to English (preferring human-uploaded over auto-generated), then falls back to whatever language the YouTube transcript panel is currently showing. Auto-generated tracks are tagged `(auto-generated)` in the dropdown.
-- **Paragraph gap** — controls how aggressively cues are merged into paragraphs. Cues separated by a silence gap **smaller than this value** stay in the same paragraph; gaps larger than this value start a new paragraph.
-  - **Dialogue** (2.5s) — default; good for podcasts and interviews where speakers swap turns.
-  - **Solo** (3.5s) — single-speaker talks, lectures, monologues.
-  - **Fast** (1.8s) — fast-talking creators, news, rapid-fire vlogs.
-  - **Slow** (5.0s) — slow-paced explainer videos, meditation, ASMR, etc.
-  - You can also type any value (0.5–60s) into the **Now** field directly.
-- **Extract transcript** — runs the extraction. While it's working, the status line walks through `Opening transcript panel… → Parsing N segments… → Rendering N paragraphs… → Saving…` so you know it's not stuck.
+- **YAML frontmatter 元数据**：频道、频道 ID、发布日期、时长、语言、字幕类型（自动生成 vs 人工上传）、章节列表 —— 全部放在头部，让 LLM 输出有事实依据。
+- **章节感知结构**：当 YouTube 自带章节（或创作者在描述里写了 OUTLINE），每个章节会变成 `### 标题`，段落按章节分组。
+- **说话人轮次识别**：播客式的 `- ` 说话人切换标记（包括同一 cue 内多次快速切换）会变成段落分隔，对话读起来自然。
+- **描述清洗**：赞助商段落、社交链接、与章节重复的 OUTLINE 都会被剥掉，不污染 LLM 的 context budget。
+- **功能边界探测**：popup 先探测页面状态；如果视频没有字幕轨，Extract 按钮直接禁用并给出明确提示 —— 不让你白点。
+- **自动展开字幕面板**：三段 fallback 兼容 YouTube 各种布局变体；同时支持旧版和新的 "modern transcript view" 渲染器。
+- **文件名规整**：下载文件名为 `YYYYMMDD-title-slug-videoId.md` —— 按日期排序、按标题速读、按 ID 唯一。
 
-### What happens behind the scenes
+纯 DOM 抓取。零外部 API 调用。无遥测。页面加载完成后断网也能用。
 
-When you hit Extract, the extractor injected into the YouTube tab will:
+## 安装（暂时只支持解压加载）
 
-1. Auto-open the transcript panel if it's not already open. It tries the description-area "Show transcript" button first, falls back to expanding the description, and finally to the video's ⋯ "More actions" menu.
-2. (If you picked a non-default language) Switch the caption track via the panel's language picker.
-3. Read every cue from the panel, strip noise markers (`[Music]`, `[Applause]`, …), detect speaker-turn dashes, and merge cues into paragraphs by timestamp gap.
-4. Pull video metadata (channel, publish date, duration, chapters) from `getPlayerResponse()` and assemble the final Markdown.
+1. clone 或下载本仓库。
+2. 浏览器打开 `chrome://extensions`，右上角开 **开发者模式**。
+3. 点 **加载已解压的扩展程序**，选本仓库根目录。
 
-The panel it reaches into looks like this — you don't have to open it yourself, but it's useful to recognize when debugging:
+每个版本的发布 zip 在 [Releases](../../releases) 页面。
+
+> Chrome Web Store 上架计划中 —— 先攒一些真实使用反馈再走审核。
+
+## 使用
+
+### 快速上手
+
+1. 打开一个 YouTube 视频页面（`youtube.com/watch?v=…`）。
+2. 点击扩展图标。popup 会探测页面；只有当视频确实有字幕轨时 **提取字幕** 按钮才会启用。
+3. （可选）从 **语言** 下拉里挑一个字幕语言 —— 只在视频有多条字幕轨时才显示。
+4. 选 **下载 .md** 或 **复制到剪贴板**，挑一个段落间隔，点 **提取字幕**。
 
 <p align="center">
-  <img src="docs/screenshots/transcript-panel.png" alt="YouTube transcript panel" width="420" />
+  <img src="docs/screenshots/popup.png" alt="扩展弹窗" width="320" />
 </p>
 
-### Output preview
+底部状态行 `检测到 N 条字幕轨，可以提取。` 是绿灯 —— 如果显示红色错误，按钮会保持禁用，错误消息会告诉你怎么处理（刷新页面、手动打开字幕面板等）。popup 语言跟随浏览器 locale（English / 简体中文），上图是 `zh_CN` 浏览器下的截图。
 
-A finished `.md` file (here, a Lex Fridman podcast episode) opens with YAML frontmatter, the chapter outline, then the trimmed Description and chapter-grouped Transcript:
+### 各控件说明
+
+- **输出方式** —— `下载 .md` 把文件保存到默认下载文件夹，命名为 `YYYYMMDD-title-slug-videoId.md`。`复制到剪贴板` 把同样的 Markdown 直接写进剪贴板，方便贴进 Claude / ChatGPT 对话框。
+- **语言** —— 只在视频有多条字幕轨时显示。默认选英文（人工上传优先于自动生成），其次回落到 YouTube 字幕面板当前显示的语言。自动生成的轨道会在下拉里标 `（自动生成）`。
+- **段落间隔** —— 控制 cue 合并成段落的力度。两条 cue 之间静音间隔 **小于这个值** 就合到同一段；超过这个值就开新段。
+  - **对谈**（2.5s）—— 默认值；适合播客和访谈这种说话人频繁切换的场景。
+  - **单人**（3.5s）—— 单人讲述、讲座、独白。
+  - **快节奏**（1.8s）—— 语速快的创作者、新闻、节奏紧凑的 vlog。
+  - **慢**（5.0s）—— 节奏慢的科普视频、冥想、ASMR 等。
+  - 也可以直接在 **当前** 输入框里手填任意值（0.5–60 秒）。
+- **提取字幕** —— 执行抽取。运行过程中状态栏会依次显示 `正在打开字幕面板… → 正在解析 N 段字幕… → 正在合并 N 段… → 正在保存…`，让你知道它没卡住。
+
+### 幕后做了什么
+
+点 提取字幕 之后，注入到 YouTube 标签页的 extractor 会：
+
+1. 如果字幕面板没打开就自动打开。先试描述区下方的 "Show transcript" 按钮，再回退到展开折叠的描述区，最后回退到视频 ⋯ "更多操作" 菜单里的项。
+2. （如果选了非默认语言）通过面板里的语言选择器切换字幕轨。
+3. 读取面板里的每条 cue，剥掉噪声标记（`[Music]`、`[Applause]`……），识别说话人 dash，按时间戳间隔合并成段落。
+4. 从 `getPlayerResponse()` 拿视频元数据（频道、发布日期、时长、章节），拼出最终 Markdown。
+
+extractor 会去读的字幕面板长这样 —— 你不用自己打开它，但调试时认识它会有帮助：
 
 <p align="center">
-  <img src="docs/screenshots/output-md.png" alt="Generated Markdown preview" width="420" />
+  <img src="docs/screenshots/transcript-panel.png" alt="YouTube 字幕面板" width="420" />
 </p>
 
-Full structure:
+### 输出预览
+
+一个完整的 `.md` 文件（这里是一期 Lex Fridman 播客）开头是 YAML frontmatter，然后是章节大纲，接着是清洗过的 Description 和按章节分组的 Transcript：
+
+<p align="center">
+  <img src="docs/screenshots/output-md.png" alt="生成的 Markdown 预览" width="420" />
+</p>
+
+完整结构：
 
 ```markdown
 ---
@@ -106,86 +108,85 @@ chapters:
   - ...
 ---
 
-# Video title
+# 视频标题
 
 ## Description
 
-[video description, with sponsor / social blocks trimmed]
+[视频描述，已剥掉 sponsor / social 段落]
 
 ## Transcript
 
 ### Introduction
 
-- First speaker turn...
+- 第一个发言段落...
 
-- Second speaker turn...
+- 第二个发言段落...
 
 ### Origin story
 
 ...
 ```
 
-Then pipe it into your LLM of choice:
+接下来就可以喂给你选的 LLM：
 
 ```bash
 cat 20260415-video-title-VIDEO_ID.md | claude -p "Write a 3-paragraph summary"
 ```
 
-## Privacy
+## 隐私
 
-This extension does not make any network requests. It reads YouTube's already-loaded page state (player response, transcript panel DOM) entirely client-side. Nothing is sent to any third-party server. There is no telemetry.
+本扩展不发起任何网络请求。它只读 YouTube 页面已加载好的状态（player response、字幕面板 DOM），全程客户端完成。不向任何第三方服务器发送数据。无遥测。
 
-The only permissions requested are `scripting` + `activeTab` — needed so the extractor can run on the current YouTube tab when you click the extension icon. The host permission is restricted to `https://www.youtube.com/*`.
+申请的权限只有 `scripting` + `activeTab` —— 用于在你点击扩展图标时把 extractor 注入当前 YouTube 标签页。host 权限被限制为 `https://www.youtube.com/*`。
 
-Full policy: [PRIVACY.md](PRIVACY.md).
+完整政策：[PRIVACY.md](PRIVACY.md)。
 
-## Project layout
+## 项目结构
 
 ```
-manifest.json         # MV3 manifest (i18n'd via __MSG_*__)
-popup.html / .js      # Popup UI: caption-boundary probe, language picker,
-                      #   staged progress feedback
-extractor.js          # Injected into the YouTube tab's MAIN world
-icons/                # 16/32/48/64/128/256/512 PNGs
+manifest.json         # MV3 manifest（用 __MSG_*__ 走 i18n）
+popup.html / .js      # Popup UI：字幕边界探测、语言选择、分阶段进度反馈
+extractor.js          # 注入到 YouTube 页面 MAIN world 执行
+icons/                # 16/32/48/64/128/256/512 PNG
 _locales/
-  en/messages.json    # default
+  en/messages.json    # 默认
   zh_CN/messages.json
 .github/workflows/
-  release.yml         # Builds & publishes a GitHub Release on `v*` tag push
-docs/screenshots/     # README assets — not bundled into the published zip
+  release.yml         # 推 v* tag 时构建并发 GitHub Release
+docs/screenshots/     # README 用的截图，不会进发布 zip
 ```
 
-The extractor runs in the page's MAIN world so it can read `document.querySelector('#movie_player').getPlayerResponse()` directly. It has no access to `chrome.i18n`, so it returns error **keys** (not strings) and the popup translates them.
+extractor 跑在页面 MAIN world，所以可以直接读 `document.querySelector('#movie_player').getPlayerResponse()`。它访问不到 `chrome.i18n`，因此返回的是错误 **key**（不是已翻译好的字符串），由 popup.js 翻译。
 
-## Development
+## 开发
 
-No build step. Edit the source, then click the reload icon on the extension card in `chrome://extensions`.
+没有 build step。改源文件后到 `chrome://extensions` 点扩展卡片上的刷新按钮即可。
 
-Gotchas:
+坑点：
 
-- `chrome.scripting.executeScript({func})` serializes the function via `.toString()`, so the extractor must be self-contained — no closures over popup-scope symbols. All helpers are defined inside the main `extractAndDeliver` function body.
-- The `ytd-video-description-transcript-section-renderer` has a `ytd-button-renderer` that wraps the real `<button>`. Always drill to the innermost `<button>` before `.click()` — clicking the wrapper is a no-op.
-- YouTube has TWO coexisting segment renderers as of 2026: the legacy `ytd-transcript-segment-renderer` and the newer `transcript-segment-view-model`. Selectors are unioned (`'old, new'`) to support both.
-- The new "modern transcript view" panel has no language dropdown in DOM — to switch caption language for those videos, use the player's gear icon → Subtitles, then re-extract.
+- `chrome.scripting.executeScript({func})` 通过 `.toString()` 序列化函数注入页面，所以 extractor 必须**完全自包含** —— 不能闭包引用 popup 作用域的符号。所有辅助函数都定义在 `extractAndDeliver` 函数体内。
+- `ytd-video-description-transcript-section-renderer` 里的 `ytd-button-renderer` 包裹了真正的 `<button>`。`.click()` 一定要钻到最内层 `<button>` 上 —— 点外层包裹元素是静默无效的。
+- 截至 2026 年，YouTube 同时存在两个 segment renderer：旧版 `ytd-transcript-segment-renderer` 和新版 `transcript-segment-view-model`。选择器用逗号 OR 一起匹配（`'old, new'`）以同时兼容。
+- 新版 "modern transcript view" 面板的 DOM 里没有语言下拉 —— 这种视频要切换字幕语言得用播放器齿轮 → Subtitles，然后再 extract。
 
-## Releasing
+## 发版
 
-Tag-driven via `.github/workflows/release.yml`:
+通过 `.github/workflows/release.yml` 走 tag 触发：
 
-1. Bump `version` in `manifest.json`.
-2. Add an entry to [CHANGELOG.md](CHANGELOG.md).
-3. `git tag v<version> && git push --tags`.
+1. 改 `manifest.json` 里的 `version`。
+2. 在 [CHANGELOG.md](CHANGELOG.md) 里加一条记录。
+3. `git tag v<version> && git push --tags`。
 
-The workflow verifies the tag matches `manifest.json` and publishes a zip to the GitHub Release.
+workflow 会校验 tag 与 `manifest.json` 版本一致，并把 zip 发布到 GitHub Release。
 
-## Contributing
+## 贡献
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports work best when they include the failing video URL + DevTools `[tube2md]` console logs — the bug template enforces this.
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。bug 报告最好附上失败的视频 URL + DevTools 控制台里 `[tube2md]` 标签的日志 —— bug 模板会强制要求这两项。
 
-## Security
+## 安全
 
-See [SECURITY.md](SECURITY.md) for responsible disclosure.
+负责任披露请见 [SECURITY.md](SECURITY.md)。
 
-## License
+## 许可
 
-MIT. See [LICENSE](LICENSE).
+MIT。见 [LICENSE](LICENSE)。
